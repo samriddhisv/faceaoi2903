@@ -470,11 +470,13 @@
 // // export default FaceMatch;
 
 
-import React from 'react'
+import React ,{useState,useEffect}from 'react'
 import { SafeAreaView, StyleSheet, View, Button, Text, Image, Alert, NativeEventEmitter, TouchableOpacity, Platform } from 'react-native'
 import { launchImageLibrary } from 'react-native-image-picker'
 import * as RNFS from 'react-native-fs'
 import FaceSDK, { Enum, FaceCaptureResponse, LivenessResponse, MatchFacesResponse, MatchFacesRequest, MatchFacesImage, MatchFacesSimilarityThresholdSplit, RNFaceApi, LivenessNotification, VideoEncoderCompletion, InitializationConfiguration } from '@regulaforensics/react-native-face-api'
+import { getAllImages } from '../Database/Database'
+
 
 interface IProps {
 }
@@ -484,12 +486,15 @@ interface IState {
   img2: any
   similarity: string
   liveness: string
+  imagesArray:[]
 }
+
+ 
 
 var image1 = new MatchFacesImage()
 var image2 = new MatchFacesImage()
 
-export default class FaceMatch extends React.Component<IProps, IState> {
+export default class MakePayment extends React.Component<IProps, IState> {
   constructor(props: {} | Readonly<{}>) {
     super(props)
 
@@ -530,10 +535,28 @@ export default class FaceMatch extends React.Component<IProps, IState> {
       img1: require('../images/portrait.png'),
       img2: require('../images/portrait.png'),
       similarity: "nil",
-      liveness: "nil"
+      liveness: "nil",
+      imagesArray: [],
     }
   }
-
+  componentDidMount() {
+    this.fetchImagesFromDatabase(); // Fetch images from database when component mounts
+ }
+ fetchImagesFromDatabase = () => {
+    getAllImages()
+      .then(data => {
+        const images = data
+          .filter(item => item.uri && item.uri.trim() !== '') // Filter out images with empty URIs
+          .map(item => ({
+            uri: item.uri,
+            number: item.number
+          }));
+        this.setState({ imagesArray: images }); // Update the state with the fetched images
+      })
+      .catch(error => {
+        console.error('Error fetching images from database:', error);
+      });
+ };
   pickImage(first: boolean) {
     Alert.alert("Select option", "", [
       {
@@ -569,7 +592,7 @@ export default class FaceMatch extends React.Component<IProps, IState> {
     } else {
       image2.bitmap = base64
       image2.imageType = type
-      this.setState({ img2: { uri: "data:image/png;base64," + base64 } })
+      this.setState({ img2: { uri:  "data:image/png;base64,"+base64} })
     }
   }
 

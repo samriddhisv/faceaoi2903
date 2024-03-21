@@ -199,6 +199,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import RegisterScreen from './Components/RegisterScreen';
 import { initDatabase } from './Database/Database';
+import MakePayment from './Components/MakePayment';
 const App = () => {
   useEffect(() => {
     initDatabase();
@@ -210,6 +211,7 @@ const Stack=createNativeStackNavigator()
          <Stack.Screen name="home" component={HomeScreen} />
           <Stack.Screen name="facematch" component={FaceMatch} />
           <Stack.Screen name="register" component={RegisterScreen} />
+          <Stack.Screen name="makepayment" component={MakePayment} />
          </Stack.Navigator>
      </NavigationContainer>
 
@@ -229,3 +231,33 @@ const styles = StyleSheet.create({
 });
 
 export default App;
+
+
+// import React from 'react';
+// import { SafeAreaView, StyleSheet, View } from 'react-native';
+// import FaceRecognitionComponent from './Components/FaceRecognitionComponent'; // Adjust the path as necessary
+
+// const App = () => {
+//  return (
+//     <SafeAreaView style={styles.container}>
+//       <View style={styles.content}>
+//         <FaceRecognitionComponent />
+//       </View>
+//     </SafeAreaView>
+//  );
+// };
+
+// const styles = StyleSheet.create({
+//  container: {
+//     flex: 1,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     backgroundColor: '#F5FCFF',
+//  },
+//  content: {
+//     width: '100%',
+//     padding: 20,
+//  },
+// });
+
+// export default App;

@@ -21,6 +21,8 @@ db.transaction(tx => {
 });
 }
 
+ 
+
 // In your database module
 export const insertImage = (details) => {
   return new Promise((resolve, reject) => {
