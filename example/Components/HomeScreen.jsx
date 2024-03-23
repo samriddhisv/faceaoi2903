@@ -43,12 +43,12 @@ export default function HomeScreen({navigation}) {
        {imagesArray.map((image, index) => (
         <View key={index}>
             <Text>Number: {image.number}</Text>
-            {image.uri && image.uri.trim() !== '' && (
+            {/* {image.uri && image.uri.trim() !== '' && (
               <Image
                 source={{ uri: image.uri }}
                 style={{ width: 100, height: 100 }} // Adjust width and height as needed
               />
-            )}
+            )} */}
         </View>
         ))}
 

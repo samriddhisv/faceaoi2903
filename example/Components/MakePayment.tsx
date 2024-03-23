@@ -470,27 +470,233 @@
 // // export default FaceMatch;
 
 
-import React ,{useState,useEffect}from 'react'
+// import React ,{useState,useEffect}from 'react'
+// import { SafeAreaView, StyleSheet, View, Button, Text, Image, Alert, NativeEventEmitter, TouchableOpacity, Platform } from 'react-native'
+// import { launchImageLibrary } from 'react-native-image-picker'
+// import * as RNFS from 'react-native-fs'
+// import FaceSDK, { Enum, FaceCaptureResponse, LivenessResponse, MatchFacesResponse, MatchFacesRequest, MatchFacesImage, MatchFacesSimilarityThresholdSplit, RNFaceApi, LivenessNotification, VideoEncoderCompletion, InitializationConfiguration } from '@regulaforensics/react-native-face-api'
+// import { getAllImages } from '../Database/Database'
+
+
+// interface IProps {
+// }
+
+// interface IState {
+//   img1: any
+//   img2: any
+//   similarity: string
+//   liveness: string
+//   imagesArray:[]
+// }
+
+ 
+
+// var image1 = new MatchFacesImage()
+// var image2 = new MatchFacesImage()
+
+// export default class MakePayment extends React.Component<IProps, IState> {
+//   constructor(props: {} | Readonly<{}>) {
+//     super(props)
+
+//     const eventManager = new NativeEventEmitter(RNFaceApi)
+//     eventManager.addListener('onCustomButtonTappedEvent', (event: string) => console.log(event))
+//     eventManager.addListener('videoEncoderCompletionEvent', (json: string) => {
+//       var completion = VideoEncoderCompletion.fromJson(JSON.parse(json))!
+//       console.log("VideoEncoderCompletion:");
+//       console.log("    success: " + completion.success);
+//       console.log("    transactionId: " + completion.transactionId);
+//     })
+//     eventManager.addListener('livenessNotificationEvent', (json: string) => {
+//       var notification = LivenessNotification.fromJson(JSON.parse(json))!
+//       console.log("LivenessProcessStatus: " + notification.status);
+//     })
+
+//     var onInit = (json: string) => {
+//       var response = JSON.parse(json)
+//       if (!response["success"]) {
+//         console.log("Init failed: ");
+//         console.log(json);
+//       } else {
+//         console.log("Init complete")
+//       }
+//     };
+
+//     var licPath = Platform.OS === 'ios' ? (RNFS.MainBundlePath + "/license/regula.license") : "regula.license"
+//     var readFile = Platform.OS === 'ios' ? RNFS.readFile : RNFS.readFileAssets
+//     readFile(licPath, 'base64').then((license) => {
+//       var config = new InitializationConfiguration();
+//       config.license = license
+//       FaceSDK.initializeWithConfig(config, onInit, (_e: any) => { })
+//     }).catch(e => {
+//       FaceSDK.initialize(onInit, (_e: any) => { })
+//     })
+
+//     this.state = {
+//       img1: require('../images/portrait.png'),
+//       img2: require('../images/portrait.png'),
+//       similarity: "nil",
+//       liveness: "nil",
+//       imagesArray: [],
+//     }
+//   }
+//   componentDidMount() {
+//     this.fetchImagesFromDatabase(); // Fetch images from database when component mounts
+//  }
+//  fetchImagesFromDatabase = () => {
+//     getAllImages()
+//       .then(data => {
+//         const images = data
+//           .filter(item => item.uri && item.uri.trim() !== '') // Filter out images with empty URIs
+//           .map(item => ({
+//             uri: item.uri,
+//             number: item.number
+//           }));
+//         this.setState({ imagesArray: images }); // Update the state with the fetched images
+//       })
+//       .catch(error => {
+//         console.error('Error fetching images from database:', error);
+//       });
+//  };
+//   pickImage(first: boolean) {
+//     Alert.alert("Select option", "", [
+//       {
+//         text: "Use gallery",
+//         onPress: () => launchImageLibrary({
+//           mediaType: 'photo',
+//           selectionLimit: 1,
+//           includeBase64: true
+//         }, (response: any) => {
+//           if (response.assets == undefined) return
+//           this.setImage(first, response.assets[0].base64!, Enum.ImageType.PRINTED)
+//         })
+//       },
+//       {
+//         text: "Use camera",
+//         onPress: () => FaceSDK.presentFaceCaptureActivity((json: string) => {
+//           var response = FaceCaptureResponse.fromJson(JSON.parse(json))!
+//           if (response.image != null && response.image.bitmap != null)
+//             this.setImage(first, response.image.bitmap, Enum.ImageType.LIVE)
+//         }, _e => { })
+//       }], { cancelable: true })
+//   }
+
+//   setImage(first: boolean, base64: string, type: number) {
+//     if (base64 == null) return
+//     this.setState({ similarity: "null" })
+//     if (first) {
+//       image1.bitmap = base64
+//       image1.imageType = type
+//       this.setState({ img1: { uri: "data:image/png;base64," + base64 } })
+//       console.log(this.state.img1);
+//       this.setState({ liveness: "null" })
+//     } else {
+//       image2.bitmap = base64
+//       image2.imageType = type
+//       this.setState({ img2: { uri:  "data:image/png;base64,"+base64} })
+//     }
+//   }
+
+//   clearResults() {
+//     this.setState({ img1: require('../images/portrait.png') })
+//     this.setState({ img2: require('../images/portrait.png') })
+//     this.setState({ similarity: "null" })
+//     this.setState({ liveness: "null" })
+//     image1 = new MatchFacesImage()
+//     image2 = new MatchFacesImage()
+//   }
+
+//   matchFaces() {
+//     if (image1 == null || image1.bitmap == null || image1.bitmap == "" || image2 == null || image2.bitmap == null || image2.bitmap == "")
+//       return
+//     this.setState({ similarity: "Processing..." })
+//     var request = new MatchFacesRequest()
+//     request.images = [image1, image2]
+//     FaceSDK.matchFaces(JSON.stringify(request), (json: string) => {
+//       var response = MatchFacesResponse.fromJson(JSON.parse(json))
+//       FaceSDK.matchFacesSimilarityThresholdSplit(JSON.stringify(response!.results), 0.75, str => {
+//         var split = MatchFacesSimilarityThresholdSplit.fromJson(JSON.parse(str))!
+//         this.setState({ similarity: split.matchedFaces!.length > 0 ? ((split.matchedFaces![0].similarity! * 100).toFixed(2) + "%") : "error" })
+//       }, e => { this.setState({ similarity: e }) })
+//     }, e => { this.setState({ similarity: e }) })
+//   }
+
+//   liveness() {
+//     FaceSDK.startLiveness((json: string) => {
+//       var response = LivenessResponse.fromJson(JSON.parse(json))!
+//       if (response.bitmap != null) {
+//         this.setImage(true, response.bitmap, Enum.ImageType.LIVE)
+//         this.setState({ liveness: response["liveness"] == Enum.LivenessStatus.PASSED ? "passed" : "unknown" })
+//       }
+//     }, _e => { })
+//   }
+
+//   render() {
+//     return (
+//       <SafeAreaView style={styles.container}>
+
+//         <View style={{ padding: 15 }}>
+//           <TouchableOpacity onPress={() => this.pickImage(true)} style={{ alignItems: "center" }}>
+//             {/* <Text>{this.state.img1}</Text> */}
+//             <Image source={this.state.img1} resizeMode="contain" style={{ height: 150, width: 150 }} />
+//           </TouchableOpacity>
+//           <TouchableOpacity onPress={() => this.pickImage(false)} style={{ alignItems: "center" }}>
+//             <Image source={this.state.img2} resizeMode="contain" style={{ height: 150, width: 200 }} />
+//           </TouchableOpacity>
+//         </View>
+
+//         <View style={{ width: "100%", alignItems: "center" }}>
+//           <View style={{ padding: 3, width: "60%" }}>
+//             <Button title="Match" color="#4285F4" onPress={() => { this.matchFaces() }} />
+//           </View>
+//           <View style={{ padding: 3, width: "60%" }}>
+//             <Button title="Liveness" color="#4285F4" onPress={() => { this.liveness() }} />
+//           </View>
+//           <View style={{ padding: 3, width: "60%" }}>
+//             <Button title="Clear" color="#4285F4" onPress={() => { this.clearResults() }} />
+//           </View>
+//         </View>
+
+//         <View style={{ flexDirection: 'row', padding: 10 }}>
+//           <Text>Similarity: {this.state.similarity}</Text>
+//           <View style={{ padding: 10 }} />
+//           <Text>Liveness: {this.state.liveness}</Text>
+//         </View>
+//       </SafeAreaView>
+//     )
+//   };
+// }
+
+// const styles = StyleSheet.create({
+//   container: {
+//     width: '100%',
+//     height: '100%',
+//     flex: 1,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     backgroundColor: '#F5FCFF',
+//     marginBottom: 12,
+//   },
+// });
+
+import React from 'react'
 import { SafeAreaView, StyleSheet, View, Button, Text, Image, Alert, NativeEventEmitter, TouchableOpacity, Platform } from 'react-native'
 import { launchImageLibrary } from 'react-native-image-picker'
 import * as RNFS from 'react-native-fs'
 import FaceSDK, { Enum, FaceCaptureResponse, LivenessResponse, MatchFacesResponse, MatchFacesRequest, MatchFacesImage, MatchFacesSimilarityThresholdSplit, RNFaceApi, LivenessNotification, VideoEncoderCompletion, InitializationConfiguration } from '@regulaforensics/react-native-face-api'
 import { getAllImages } from '../Database/Database'
-
-
 interface IProps {
 }
-
+interface ImageObject {
+  uri: string;
+  number: string
+  // Include other properties of the image objects if necessary
+ }
 interface IState {
   img1: any
   img2: any
   similarity: string
-  liveness: string
-  imagesArray:[]
+  allImages: ImageObject[]
 }
-
- 
-
 var image1 = new MatchFacesImage()
 var image2 = new MatchFacesImage()
 
@@ -535,28 +741,31 @@ export default class MakePayment extends React.Component<IProps, IState> {
       img1: require('../images/portrait.png'),
       img2: require('../images/portrait.png'),
       similarity: "nil",
-      liveness: "nil",
-      imagesArray: [],
+      allImages:[]
     }
   }
-  componentDidMount() {
-    this.fetchImagesFromDatabase(); // Fetch images from database when component mounts
- }
- fetchImagesFromDatabase = () => {
+  fetchAllImages = () => {
     getAllImages()
-      .then(data => {
-        const images = data
-          .filter(item => item.uri && item.uri.trim() !== '') // Filter out images with empty URIs
-          .map(item => ({
-            uri: item.uri,
-            number: item.number
-          }));
-        this.setState({ imagesArray: images }); // Update the state with the fetched images
-      })
-      .catch(error => {
-        console.error('Error fetching images from database:', error);
-      });
- };
+       .then(images => {
+         this.setState({ allImages: images });
+       })
+       .catch(error => {
+         console.error('Error fetching all images:', error);
+         // Optionally, handle the error in your UI
+       });
+   };
+   componentDidMount() {
+    this.fetchAllImages();
+ }
+ componentDidUpdate(prevProps, prevState) {
+  // Check if allImages has been updated and is not empty
+  if (prevState.allImages !== this.state.allImages && this.state.allImages.length > 0) {
+     // Now it's safe to access the first element
+     console.log(`First Image URI: ${this.state.allImages[0].uri}`);
+  }
+ }
+ 
+   
   pickImage(first: boolean) {
     Alert.alert("Select option", "", [
       {
@@ -566,6 +775,7 @@ export default class MakePayment extends React.Component<IProps, IState> {
           selectionLimit: 1,
           includeBase64: true
         }, (response: any) => {
+          console.log(response);
           if (response.assets == undefined) return
           this.setImage(first, response.assets[0].base64!, Enum.ImageType.PRINTED)
         })
@@ -587,49 +797,47 @@ export default class MakePayment extends React.Component<IProps, IState> {
       image1.bitmap = base64
       image1.imageType = type
       this.setState({ img1: { uri: "data:image/png;base64," + base64 } })
-      console.log(this.state.img1);
-      this.setState({ liveness: "null" })
     } else {
       image2.bitmap = base64
       image2.imageType = type
-      this.setState({ img2: { uri:  "data:image/png;base64,"+base64} })
+      this.setState({ img2: { uri: "data:image/png;base64," + base64 } })
     }
   }
-
-  clearResults() {
-    this.setState({ img1: require('../images/portrait.png') })
-    this.setState({ img2: require('../images/portrait.png') })
-    this.setState({ similarity: "null" })
-    this.setState({ liveness: "null" })
-    image1 = new MatchFacesImage()
-    image2 = new MatchFacesImage()
-  }
-
   matchFaces() {
-    if (image1 == null || image1.bitmap == null || image1.bitmap == "" || image2 == null || image2.bitmap == null || image2.bitmap == "")
-      return
-    this.setState({ similarity: "Processing..." })
-    var request = new MatchFacesRequest()
-    request.images = [image1, image2]
-    FaceSDK.matchFaces(JSON.stringify(request), (json: string) => {
-      var response = MatchFacesResponse.fromJson(JSON.parse(json))
-      FaceSDK.matchFacesSimilarityThresholdSplit(JSON.stringify(response!.results), 0.75, str => {
-        var split = MatchFacesSimilarityThresholdSplit.fromJson(JSON.parse(str))!
-        this.setState({ similarity: split.matchedFaces!.length > 0 ? ((split.matchedFaces![0].similarity! * 100).toFixed(2) + "%") : "error" })
-      }, e => { this.setState({ similarity: e }) })
-    }, e => { this.setState({ similarity: e }) })
-  }
-
-  liveness() {
-    FaceSDK.startLiveness((json: string) => {
-      var response = LivenessResponse.fromJson(JSON.parse(json))!
-      if (response.bitmap != null) {
-        this.setImage(true, response.bitmap, Enum.ImageType.LIVE)
-        this.setState({ liveness: response["liveness"] == Enum.LivenessStatus.PASSED ? "passed" : "unknown" })
-      }
-    }, _e => { })
-  }
-
+    if (image1 == null || image1.bitmap == null || image1.bitmap == "" || this.state.allImages.length === 0) {
+       return;
+    }
+    this.setState({ similarity: "Processing..." });
+    let matchFound = false;
+    // Iterate over allImages to find a match
+    for (let i = 0; i < this.state.allImages.length && !matchFound; i++) {
+       const image2 = new MatchFacesImage();
+       image2.bitmap = this.state.allImages[i].uri; // Assuming the URI is directly usable
+       image2.imageType = Enum.ImageType.PRINTED; // Adjust the image type as necessary
+   
+       var request = new MatchFacesRequest();
+       request.images = [image1, image2];
+   
+       FaceSDK.matchFaces(JSON.stringify(request), (json: string) => {
+         var response = MatchFacesResponse.fromJson(JSON.parse(json));
+         FaceSDK.matchFacesSimilarityThresholdSplit(JSON.stringify(response!.results), 0.75, str => {
+           var split = MatchFacesSimilarityThresholdSplit.fromJson(JSON.parse(str))!;
+           if (split.matchedFaces!.length > 0) {
+             // Match found, log the number and stop searching
+             console.log(`Match found with similarity: ${(split.matchedFaces![0].similarity! * 100).toFixed(2)}%`);
+             console.log(`Respective number: ${this.state.allImages[i].number}`); // Assuming each image object has a 'number' property
+             matchFound = true; // Set the flag to true
+             this.setState({ similarity: split.matchedFaces!.length > 0 ? ((split.matchedFaces![0].similarity! * 100).toFixed(2) + "%") : "error" })
+           }
+         }, e => {
+           console.error('Error in matchFacesSimilarityThresholdSplit:', e);
+         });
+       }, e => {
+         console.error('Error in matchFaces:', e);
+       });
+    }
+   }
+   
   render() {
     return (
       <SafeAreaView style={styles.container}>
@@ -639,33 +847,23 @@ export default class MakePayment extends React.Component<IProps, IState> {
             {/* <Text>{this.state.img1}</Text> */}
             <Image source={this.state.img1} resizeMode="contain" style={{ height: 150, width: 150 }} />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => this.pickImage(false)} style={{ alignItems: "center" }}>
-            <Image source={this.state.img2} resizeMode="contain" style={{ height: 150, width: 200 }} />
-          </TouchableOpacity>
         </View>
 
         <View style={{ width: "100%", alignItems: "center" }}>
           <View style={{ padding: 3, width: "60%" }}>
             <Button title="Match" color="#4285F4" onPress={() => { this.matchFaces() }} />
           </View>
-          <View style={{ padding: 3, width: "60%" }}>
-            <Button title="Liveness" color="#4285F4" onPress={() => { this.liveness() }} />
-          </View>
-          <View style={{ padding: 3, width: "60%" }}>
-            <Button title="Clear" color="#4285F4" onPress={() => { this.clearResults() }} />
-          </View>
         </View>
 
         <View style={{ flexDirection: 'row', padding: 10 }}>
           <Text>Similarity: {this.state.similarity}</Text>
           <View style={{ padding: 10 }} />
-          <Text>Liveness: {this.state.liveness}</Text>
         </View>
       </SafeAreaView>
     )
   };
-}
 
+}
 const styles = StyleSheet.create({
   container: {
     width: '100%',

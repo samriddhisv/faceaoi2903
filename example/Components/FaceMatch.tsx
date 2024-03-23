@@ -543,6 +543,7 @@ export default class FaceMatch extends React.Component<IProps, IState> {
           selectionLimit: 1,
           includeBase64: true
         }, (response: any) => {
+          console.log(response);
           if (response.assets == undefined) return
           this.setImage(first, response.assets[0].base64!, Enum.ImageType.PRINTED)
         })
