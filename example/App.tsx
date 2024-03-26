@@ -200,6 +200,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import RegisterScreen from './Components/RegisterScreen';
 import { initDatabase } from './Database/Database';
 import MakePayment from './Components/MakePayment';
+import PaymentScreen from './Components/PaymentScreen';
 const App = () => {
   useEffect(() => {
     initDatabase();
@@ -212,6 +213,7 @@ const Stack=createNativeStackNavigator()
           <Stack.Screen name="facematch" component={FaceMatch} />
           <Stack.Screen name="register" component={RegisterScreen} />
           <Stack.Screen name="makepayment" component={MakePayment} />
+          <Stack.Screen name="PaymentScreen" component={PaymentScreen}/>
          </Stack.Navigator>
      </NavigationContainer>
 

@@ -16,6 +16,7 @@
     "@regulaforensics/react-native-face-core-basic": "6.1.0",
     "axios": "^1.6.8",
     "ip": "^2.0.1",
+    "one-react-native-upi": "^0.1.2",
     "react": "^18.2.0",
     "react-native": "^0.72.7",
     "react-native-fs": "^2.20.0",
