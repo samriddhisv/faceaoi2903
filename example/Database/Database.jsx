@@ -6,14 +6,15 @@ const db = SQLite.openDatabase({ name: 'my.db', location: 'default' });
 export const initDatabase = () => {
   db.transaction(tx => {
      tx.executeSql(
-       `CREATE TABLE IF NOT EXISTS Users (
+       `CREATE TABLE IF NOT EXISTS facepay (
          id INTEGER PRIMARY KEY AUTOINCREMENT,
          uri TEXT,
-         number TEXT
+         number TEXT,
+         upiId TEXT
        );`,
        [],
        (tx, results) => {
-         console.log('Users Table created');
+         console.log('facepay Table created');
        },
        error => {
          console.error('error', error);
@@ -23,14 +24,21 @@ export const initDatabase = () => {
  };
  
  export const insertImage = (details) => {
+  console.log('details uri: ' ,details.uri);
+  console.log('details number: ' ,details.number);
+  console.log('details upiId: ' ,details.upiId);
   return new Promise((resolve, reject) => {
+    initDatabase();
      db.transaction(tx => {
        tx.executeSql(
-         `INSERT INTO Users(uri, number) VALUES (?, ?)`,
-         [details.uri, details.number],
+         `INSERT INTO facepay(uri,number,upiId) VALUES (?, ?, ?)`,
+         [details.uri, details.number, details.upiId],
+         
          (_, results) => {
            if (results.rowsAffected > 0) {
-             console.log(`Inserted at row ${results.insertId}:`, details.number);
+             console.log(`Inserted at row ${results.insertId}:`, details.number,details.upiId);
+             console.log('Inserting details:', details);
+
              resolve();
            } else {
              console.log('Failed to add details');
@@ -50,9 +58,10 @@ export const initDatabase = () => {
   
   export const getAllImages = () => {
     return new Promise((resolve, reject) => {
+      initDatabase();
       db.transaction(tx => {
         tx.executeSql(
-          'SELECT uri, number FROM Users',
+          'SELECT uri, number,upiId FROM facepay',
           [],
           (_, { rows }) => {
             const images = [];
@@ -72,9 +81,10 @@ export const initDatabase = () => {
   
   export const deleteAllRows = () => {
     return new Promise((resolve, reject) => {
+      initDatabase();
        db.transaction(tx => {
          tx.executeSql(
-           'DELETE FROM Users',
+           'DELETE FROM facepay',
            [],
            (_, { rowsAffected }) => {
              console.log(`Deleted ${rowsAffected} rows`);

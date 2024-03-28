@@ -201,6 +201,7 @@ import RegisterScreen from './Components/RegisterScreen';
 import { initDatabase } from './Database/Database';
 import MakePayment from './Components/MakePayment';
 import PaymentScreen from './Components/PaymentScreen';
+import Settings from './Components/Settings';
 const App = () => {
   useEffect(() => {
     initDatabase();
@@ -208,12 +209,21 @@ const App = () => {
 const Stack=createNativeStackNavigator()
  return (
   <NavigationContainer>
-           <Stack.Navigator initialRouteName="home">
-         <Stack.Screen name="home" component={HomeScreen} />
+<Stack.Navigator initialRouteName="Home"
+                   screenOptions={{
+                    headerStyle: {
+                      backgroundColor: '#0096FF', 
+                    },
+                    headerTintColor: '#fff', 
+                    headerTitleStyle: {
+                      fontWeight: 'bold', 
+                    }, }}>         
+                    <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="facematch" component={FaceMatch} />
-          <Stack.Screen name="register" component={RegisterScreen} />
-          <Stack.Screen name="makepayment" component={MakePayment} />
+          <Stack.Screen name="Register" component={RegisterScreen} />
+          <Stack.Screen name="Make Payment" component={MakePayment} />
           <Stack.Screen name="PaymentScreen" component={PaymentScreen}/>
+          <Stack.Screen name="Settings" component={Settings}/>
          </Stack.Navigator>
      </NavigationContainer>
 
