@@ -218,10 +218,10 @@ matchFaces() {
            matchFound = true; // Set the flag to true
            this.setState({ similarity: split.matchedFaces!.length > 0 ? ((split.matchedFaces![0].similarity! * 100).toFixed(2) + "%") : "error", matchedPhoneNumber: this.state.allImages[i].number, upiId: this.state.allImages[i].upiId });
            // No need to fetch UPI ID from an external service since it's already available in the database
-           this.props.navigation.navigate('PaymentScreen', {
-             phoneNumber: this.state.matchedPhoneNumber,
-             upiId: this.state.upiId,
-           });
+          //  this.props.navigation.navigate('PaymentScreen', {
+          //    phoneNumber: this.state.matchedPhoneNumber,
+          //    upiId: this.state.upiId,
+          //  });
            this.setState({ isLoading: false }); // Hide loader
          }
        }, e => {
@@ -262,6 +262,8 @@ matchFaces() {
   //   OneUpi.initiate(config, onSuccess, onFailure);
   //  };
   render() {
+    if (this.state.matchedPhoneNumber && this.state.upiId) {
+      return <PaymentScreen route={{ params: { phoneNumber: this.state.matchedPhoneNumber, upiId: this.state.upiId } }} />;   }
     return (
       <SafeAreaView style={styles.container}>
 {this.state.isLoading ? (
